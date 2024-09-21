@@ -47,7 +47,7 @@ const userRoutes = require('./routes/userRoutes');
 
 app.use('/adminApp',limiter, tutorialRoutes)
 app.use('/adminApp/challengesRoutes',limiter, challengesRoutes)
-app.use("/admin/users", limiter,userRoutes);
+app.use("/admin/users", limiter,bruteforce.prevent,userRoutes);
 app.use('/admin/tutorials',limiter, tutorialRoutes)
 
 //compiler
