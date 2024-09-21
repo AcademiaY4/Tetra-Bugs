@@ -6,6 +6,12 @@ const cors = require('cors')
 
 const app = express()
 
+/**
+ * limiting server request resources
+ * Below mainly 100kb is considered
+**/
+app.use(express.json({ limit: '100kb' }));
+
 app.use(bodyParser.json())
 app.use(cors())
 
@@ -18,18 +24,12 @@ app.use('/adminApp/challengesRoutes', challengesRoutes)
 app.use("/admin/users", userRoutes);
 app.use('/admin/tutorials', tutorialRoutes)
 
-
 //compiler
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 const compilerRoutes = require('./routes/compilerRoutes')
 app.use('/compiler', compilerRoutes)
-
-
-
-
-
 
 
 const PORT = 5000

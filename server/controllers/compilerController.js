@@ -6,6 +6,15 @@ exports.runCode = async(req, res) => {
     if (code === undefined) {
         return res.status(400).json({ success: false, error: "Empty code body" })
     }
+
+    /**
+     * limit the max characters of code length
+     * Below its considered as 1000 chars
+     */
+    if (code.length > 1000) {
+        return res.status(400).json({ success: false, error: "Code too large" });
+    }
+    
     try {
         const filePath = await generateFile(language, code, className)
         const output = await executeJava(filePath, className)
@@ -17,9 +26,6 @@ exports.runCode = async(req, res) => {
     } catch (err) {
         return res.status(500).json({ error: err })
     }
-
-
-
 }
 
 //file path generating for code
