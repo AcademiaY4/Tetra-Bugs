@@ -4,6 +4,19 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
+/*
+* limiting server request resources
+* Below express rate limiter is used
+* set a limit of 10 requests per minute for each IP address
+*/
+const rateLimit = require('express-rate-limit');
+// Set a limit of 10 requests per minute for each IP address
+const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 10, // limit each IP to 10 requests per windowMs
+    message: { success: false, error: "Too many requests, please try again later." }
+});
+
 const app = express()
 
 /**
@@ -19,10 +32,10 @@ const tutorialRoutes = require('./routes/tutorialRoutes')
 const challengesRoutes = require('./routes/challengesRoutes')
 const userRoutes = require('./routes/userRoutes');
 
-app.use('/adminApp', tutorialRoutes)
-app.use('/adminApp/challengesRoutes', challengesRoutes)
-app.use("/admin/users", userRoutes);
-app.use('/admin/tutorials', tutorialRoutes)
+app.use('/adminApp',rateLimit, tutorialRoutes)
+app.use('/adminApp/challengesRoutes',rateLimit, challengesRoutes)
+app.use("/admin/users", rateLimit,userRoutes);
+app.use('/admin/tutorials',rateLimit, tutorialRoutes)
 
 //compiler
 app.use(express.urlencoded({ extended: true }))
