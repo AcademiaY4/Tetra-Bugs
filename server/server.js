@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+// Import CorsConfig before using it
+const corsOption  = require("./config/CorsConfig");
 
 /*
 * limiting server request resources
@@ -26,7 +28,7 @@ const app = express()
 app.use(express.json({ limit: '100kb' }));
 
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors(corsOption))
 
 const tutorialRoutes = require('./routes/tutorialRoutes')
 const challengesRoutes = require('./routes/challengesRoutes')
@@ -41,7 +43,8 @@ app.use('/admin/tutorials',rateLimit, tutorialRoutes)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-const compilerRoutes = require('./routes/compilerRoutes')
+const compilerRoutes = require('./routes/compilerRoutes');
+const { default: CorsConfig } = require("./config/CorsConfig");
 app.use('/compiler', compilerRoutes)
 
 
