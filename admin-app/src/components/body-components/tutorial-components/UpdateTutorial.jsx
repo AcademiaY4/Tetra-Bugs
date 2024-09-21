@@ -82,23 +82,48 @@ export default function UpdateTutorial({isDark}) {
         const updateExercises = exercises.filter((_, i) => i !== index);
         setExercises(updateExercises);
     }
-
+    /** 
+     * Prototype Pollution
+     * below shows the fixes related to it 
+     */
     const updateExerciseQuestions = (index, value) => {
+        // Check if value contains unsafe properties
+        if (typeof value === 'object' && (value.hasOwnProperty('__proto__') || value.hasOwnProperty('constructor'))) {
+            throw new Error("Prototype pollution attempt detected!");
+        }
         const updateExercises = [...exercises];
         updateExercises[index].question = value;
         setExercises(updateExercises);
     }
     
     const updateExerciseAnsweringSections = (index, value) => {
+        // Check if value contains unsafe properties
+        if (typeof value === 'object' && (value.hasOwnProperty('__proto__') || value.hasOwnProperty('constructor'))) {
+            throw new Error("Prototype pollution attempt detected!");
+        }
         const updateExercises = [...exercises];
         updateExercises[index].answering_section = value;
         setExercises(updateExercises);
     }
     
     const updateExerciseAnswers = (index, value) => {
+        // Check if value contains unsafe properties
+        if (typeof value === 'object' && (value.hasOwnProperty('__proto__') || value.hasOwnProperty('constructor'))) {
+            throw new Error("Prototype pollution attempt detected!");
+        }
         const updateExercises = [...exercises];
         updateExercises[index].answer = value;
         setExercises(updateExercises);
+    }
+    
+    const updateSectionTitle = (index, value) => {
+        // Check if value contains unsafe properties
+        if (typeof value === 'object' && (value.hasOwnProperty('__proto__') || value.hasOwnProperty('constructor'))) {
+            throw new Error("Prototype pollution attempt detected!");
+        }
+        const updatedSections = [...sections];
+        updatedSections[index].title = value;
+        setSections(updatedSections);
     }
 
     const addSection = () => {
@@ -110,11 +135,6 @@ export default function UpdateTutorial({isDark}) {
         setSections(updatedSections);
     }
 
-    const updateSectionTitle = (index, value) => {
-        const updatedSections = [...sections];
-        updatedSections[index].title = value;
-        setSections(updatedSections);
-    }
 
     const addParagraph = (sectionIndex) => {
         const updatedSections = [...sections];
