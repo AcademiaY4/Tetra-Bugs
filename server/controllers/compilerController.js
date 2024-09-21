@@ -6,7 +6,6 @@ exports.runCode = async(req, res) => {
     if (code === undefined) {
         return res.status(400).json({ success: false, error: "Empty code body" })
     }
-
     /**
      * limit the max characters of code length
      * Below its considered as 1000 chars
