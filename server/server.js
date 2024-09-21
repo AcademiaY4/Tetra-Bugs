@@ -32,10 +32,10 @@ const tutorialRoutes = require('./routes/tutorialRoutes')
 const challengesRoutes = require('./routes/challengesRoutes')
 const userRoutes = require('./routes/userRoutes');
 
-app.use('/adminApp',rateLimit, tutorialRoutes)
-app.use('/adminApp/challengesRoutes',rateLimit, challengesRoutes)
-app.use("/admin/users", rateLimit,userRoutes);
-app.use('/admin/tutorials',rateLimit, tutorialRoutes)
+app.use('/adminApp',limiter, tutorialRoutes)
+app.use('/adminApp/challengesRoutes',limiter, challengesRoutes)
+app.use("/admin/users", limiter,userRoutes);
+app.use('/admin/tutorials',limiter, tutorialRoutes)
 
 //compiler
 app.use(express.urlencoded({ extended: true }))
