@@ -5,6 +5,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 // Import CorsConfig before using it
 const corsOption  = require("./config/CorsConfig");
+// Import BruteForce packages
+const ExpressBrute = require('express-brute');
 
 /*
 * limiting server request resources
@@ -12,11 +14,20 @@ const corsOption  = require("./config/CorsConfig");
 * set a limit of 10 requests per minute for each IP address
 */
 const rateLimit = require('express-rate-limit');
-// Set a limit of 10 requests per minute for each IP address
 const limiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
     max: 10, // limit each IP to 10 requests per windowMs
     message: { success: false, error: "Too many requests, please try again later." }
+});
+
+
+//limiting server request for brute force
+const store = new ExpressBrute.MemoryStore();
+const bruteforce = new ExpressBrute(store, {
+    freeRetries: 5, // Allow 5 failed attempts
+    minWait: 5 * 60 * 1000, // Wait 5 minutes before retrying
+    maxWait: 60 * 60 * 1000, // Maximum wait time 1 hour
+    lifetime: 24 * 60 * 60 // 1 day lifetime
 });
 
 const app = express()
@@ -36,7 +47,7 @@ const userRoutes = require('./routes/userRoutes');
 
 app.use('/adminApp',rateLimit, tutorialRoutes)
 app.use('/adminApp/challengesRoutes',rateLimit, challengesRoutes)
-app.use("/admin/users", rateLimit,userRoutes);
+app.use("/admin/users", rateLimit,bruteforce.prevent,userRoutes);
 app.use('/admin/tutorials',rateLimit, tutorialRoutes)
 
 //compiler
