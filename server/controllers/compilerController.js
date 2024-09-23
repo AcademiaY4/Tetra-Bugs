@@ -47,8 +47,13 @@ const generateFile = async(format, content, className) => {
 
 }
 
+// Sanitize input function to avoid from malicious command inputs
+const sanitizeInput = (input) => {
+    return typeof input === 'string' ? input.replace(/[^a-zA-Z0-9_]/g, '') : ''; // Only alphanumeric and underscores allowed.
+};
+
 //executing the code
-const { exec } = require('child_process');
+const { exec, execFile } = require('child_process');
 
 
 const dirOutput = path.join(__dirname, 'outputs');
@@ -57,7 +62,23 @@ if (!fs.existsSync(dirOutput)) {
     fs.mkdirSync(dirOutput, { recursive: true });
 }
 
+// Modified executeJava function adding execFile for preventing the command injection vulnerability
 const executeJava = (filePath, className) => {
+    return new Promise((resolve, reject) => {
+        const sanitizedClassName = sanitizeInput(className);
+        execFile('javac', [filePath, '-d', dirOutput], (error, stdout, stderr) => {
+            if (error || stderr) return reject({ error, stderr });
+            
+            execFile('java', ['-cp', dirOutput, sanitizedClassName], (error, stdout, stderr) => {
+                if (error || stderr) return reject({ error, stderr });
+                resolve(stdout);
+            });
+        });
+    });
+};
+
+// existing code wroteusing exec 
+/*const executeJava = (filePath, className) => {
     const jobId = path.basename(filePath, '.java');
     const outPath = path.join(dirOutput, `${jobId}.class`);
 
@@ -70,4 +91,4 @@ const executeJava = (filePath, className) => {
             resolve(stdout)
         });
     });
-};
+};*/
