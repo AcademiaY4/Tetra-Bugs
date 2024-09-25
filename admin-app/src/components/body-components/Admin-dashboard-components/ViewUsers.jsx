@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify"; // Import DOMPurify for sanitization
+import { useNavigate } from "react-router-dom";
 import "./ViewUser.css";
 
 function ViewUsers() {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-
-  const handleSubmit = (userId) => {
-    // Handle delete logic here, e.g., making an API request to delete the user.
-  };
 
   useEffect(() => {
     axios
@@ -26,8 +23,8 @@ function ViewUsers() {
     // Create a new window for printing
     const printWindow = window.open('', '', 'width=600,height=600');
 
-    // Define the content to be printed
-    const content = `
+    // Create a sanitized content string
+    const sanitizedContent = `
       <html>
         <head>
           <title>User List</title>
@@ -48,10 +45,10 @@ function ViewUsers() {
                 .map(
                   (user) => `
                   <tr>
-                    <td>${user.firstName}</td>
-                    <td>${user.lastName}</td>
-                    <td>${user.emailAddress}</td>
-                    <td>${user.country}</td>
+                    <td>${DOMPurify.sanitize(user.firstName)}</td>
+                    <td>${DOMPurify.sanitize(user.lastName)}</td>
+                    <td>${DOMPurify.sanitize(user.emailAddress)}</td>
+                    <td>${DOMPurify.sanitize(user.country)}</td>
                   </tr>
                 `
                 )
@@ -62,9 +59,9 @@ function ViewUsers() {
       </html>
     `;
 
-    // Set the content of the new window to the HTML content
+    // Set the content of the new window to the sanitized HTML content
     printWindow.document.open();
-    printWindow.document.write(content);
+    printWindow.document.write(DOMPurify.sanitize(sanitizedContent)); // Sanitize the entire content
     printWindow.document.close();
 
     // Print the window as a PDF
