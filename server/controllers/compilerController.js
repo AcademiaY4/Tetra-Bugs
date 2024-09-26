@@ -15,6 +15,14 @@ exports.runCode = async (req, res) => {
         return res.status(400).json({ success: false, error: "Invalid class name" });
     }
 
+    /**
+     * limit the max characters of code length
+     * Below its considered as 1000 chars
+     */
+    if (code.length > 1000) {
+        return res.status(400).json({ success: false, error: "Code too large" });
+    }
+    
     try {
         const filePath = await generateFile(language, code, sanitizedClassName);
         const output = await executeJava(filePath, sanitizedClassName);
