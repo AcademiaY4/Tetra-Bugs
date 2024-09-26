@@ -5,6 +5,9 @@ import { Card } from "@nextui-org/react"; // Removed unused Button import
 import { LoginUser } from "./apiCalls/users";
 import { message } from "antd";
 import imgSrc from "./loginImg.jpg";
+import { Icon } from '@iconify/react';
+import { useGoogleLogin } from "@react-oauth/google";
+import { googleAuth } from "./apiCalls/api";
 
 export default function Login({ isDark }) {
   
@@ -42,7 +45,7 @@ export default function Login({ isDark }) {
       if (response.success) {
         message.success("response.message");
         localStorage.setItem("AuthToken", response.data);
-        navigate("/dashboard"); // Use navigate to redirect within the app
+        navigate("/"); // Use navigate to redirect within the app
       } else {
         message.error(response.message);
       }
@@ -58,6 +61,31 @@ export default function Login({ isDark }) {
   //     navigate("/dashboard");
   //   }
   // }, []);
+
+  const responseGoogle = async (authResult) => {
+		try {
+			if (authResult["code"]) {
+				const result = await googleAuth(authResult.code);
+				const {email, name, image} = result.data.user;
+				const token = result.data.token;
+				const obj = {email,name, token, image};
+				localStorage.setItem('user-info',JSON.stringify(obj));
+        navigate('/');
+        window.location.reload();
+			} else {
+				console.log(authResult);
+				throw new Error(authResult);
+			}
+		} catch (e) {
+			console.log('Error while Google Login...', e);
+		}
+	};
+
+	const googleLogin = useGoogleLogin({
+		onSuccess: responseGoogle,
+		onError: responseGoogle,
+		flow: "auth-code",
+	});
 
   return (
     <div className="page-container">
@@ -122,7 +150,7 @@ export default function Login({ isDark }) {
 
               <section
                 className="center"
-                style={{ justifyContent: "center", padding: "20px" }}
+                style={{ justifyContent: "center", flexDirection:'column', gap:'6px', margin: "20px 0"}}
               >
                 <button
                   type="submit"
@@ -133,9 +161,28 @@ export default function Login({ isDark }) {
                     border: "none",
                     borderRadius: "5px",
                     cursor: "pointer",
+                    width: '100%'
                   }}
                 >
                   Submit
+                </button>
+                <button
+                  style={{
+                    backgroundColor: "#fff",
+                    color: "#000",
+                    padding: "10px 20px",
+                    border: "1px solid gray",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    width: '100%',
+                    justifyContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                    gap: "10px"
+                  }}
+                  onClick={googleLogin}
+                >
+                  <Icon icon="logos:google-icon" />Sign in with Google
                 </button>
               </section>
               <p className="link-container">
