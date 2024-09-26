@@ -4,6 +4,8 @@ import './App.css';
 import {useState, useEffect} from "react";
 import NavBar from "./components/NavBar";
 import Main from "./components/Main";
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const lightTheme = createTheme({
   type: 'light',
@@ -30,6 +32,21 @@ function App() {
   const [isDark, setIsDark] = useState()
 
   useEffect(() => {
+
+    async function fetchCsrfToken() {
+      try {
+        // Fetch the CSRF token from the /csrf-token endpoint
+        const response = await axios.get('/csrf-token');
+        // Store the CSRF token in cookies
+        Cookies.set('XSRF-TOKEN', response.data.csrfToken);
+      } catch (error) {
+        console.error("Failed to fetch CSRF token", error);
+      }
+    }
+
+    // Call the function to fetch CSRF token
+    fetchCsrfToken();
+
     const getIsDark = localStorage.getItem('isDark')
     
     if(getIsDark===null){
@@ -41,7 +58,7 @@ function App() {
     }
     
     
-  })
+  }, [])
 
   return (
     <NextUIProvider theme={isDark === true ? darkTheme : lightTheme}>

@@ -1,6 +1,6 @@
 import React from 'react'
 import {useEffect, useState} from 'react'
-import axios from 'axios'
+import axiosInstance from './apiCalls/axiosInstance'
 import AceEditor from 'react-ace';
 import {Avatar, Button, Loading, Spacer} from '@nextui-org/react'
 import { Icon } from '@iconify/react';
@@ -79,7 +79,7 @@ export default function SelectedTutorial({isDark}) {
     }
 
     useEffect(()=>{
-        axios.get(`http://localhost:5000/admin/tutorials/getSelectedTutorials/category?category=${tutorialCategory}`).then((res)=>{
+        axiosInstance.get(`http://localhost:5000/admin/tutorials/getSelectedTutorials/category?category=${tutorialCategory}`).then((res)=>{
             if(res.data.success){
                 setTutorials(res.data.tutorials)
             }
@@ -87,7 +87,7 @@ export default function SelectedTutorial({isDark}) {
     },[])
     
     useEffect(()=>{
-        axios.get(`http://localhost:5000/admin/tutorials/getSelectedTutorial/${tutorialID}`).then((res)=>{
+        axiosInstance.get(`http://localhost:5000/admin/tutorials/getSelectedTutorial/${tutorialID}`).then((res)=>{
             if(res.data.success){
                 setSelectedTutorial(res.data.tutorials)
                 setSelectedTutorialSections(res.data.tutorials.tutorial_section)
@@ -128,7 +128,7 @@ export default function SelectedTutorial({isDark}) {
         }else{
             const documentId = selectedTutorial._id
             const newReview = {comment:review, rating:rating, user_id:`${user.firstName} ${user.lastName}`, postedDate:currentDateTime} 
-            axios.post('http://localhost:5000/admin/tutorials/addReview', { documentId, newReview }).then((response) => {
+            axiosInstance.post('http://localhost:5000/admin/tutorials/addReview', { documentId, newReview }).then((response) => {
                 if (response.data.success) {
                     console.log('Value added successfully')
                     message.success("Review added successfully")
