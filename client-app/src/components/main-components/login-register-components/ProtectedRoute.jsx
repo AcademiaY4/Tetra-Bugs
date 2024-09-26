@@ -13,12 +13,14 @@ function ProtectedRoute({ children }) {
       if (response.success) {
         setUser(response.data);
       } else {
-        // localStorage.removeItem("AuthToken");
+        localStorage.removeItem("AuthToken");
         message.error(response.message);
+        navigate("/login");
       }
     } catch (error) {
-      // localStorage.removeItem("AuthToken");
+      localStorage.removeItem("AuthToken");
       message.error(error.message);
+      navigate("/login");
     }
   };
 

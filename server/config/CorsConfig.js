@@ -11,6 +11,7 @@ const whiteList = [
         callback(new Error("Not Allowed By CORS"));
       }
     },
+    credentials : true,
     optionalSuccessStatus: 200,
   };
   

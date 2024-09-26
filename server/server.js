@@ -3,10 +3,14 @@ const express = require('express');
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const csrf = require('csurf')
+const cookieParser = require('cookie-parser')
 // Import CorsConfig before using it
 const corsOption  = require("./config/CorsConfig");
 // Import BruteForce packages
 const ExpressBrute = require('express-brute');
+
+const csrfProtection = csrf({ cookie: true })
 
 /*
 * limiting server request resources
@@ -41,6 +45,13 @@ app.use(express.json({ limit: '100kb' }));
 app.use(bodyParser.json())
 app.use(cors(corsOption))
 
+app.use(cookieParser())
+app.use(csrfProtection)
+
+app.get('/csrf-token', (req, res) => {
+    res.json({ csrfToken: req.csrfToken() })
+})
+
 const tutorialRoutes = require('./routes/tutorialRoutes')
 const challengesRoutes = require('./routes/challengesRoutes')
 const userRoutes = require('./routes/userRoutes');
@@ -68,6 +79,14 @@ mongoose.connect(DB_URL).then(() => {
     console.log('Database was not connected, Error orccured')
     console.log(err)
 })
+
+// Handle CSRF errors globally
+app.use((err, req, res, next) => {
+    if (err.code === 'EBADCSRFTOKEN') {
+        return res.status(403).json({ success: false, message: 'Invalid CSRF token' });
+    }
+    next(err);
+});
 
 app.listen(PORT, () => {
     console.log(`Server is Running on ${PORT}`)
