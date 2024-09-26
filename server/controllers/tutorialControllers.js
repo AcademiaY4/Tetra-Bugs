@@ -63,7 +63,11 @@ exports.getSelectedTutorials = (req, res) => {
 exports.getSearchedTutorials = (req, res) => {
     const categoryQuery = req.query.category
     const keyQuery = req.query.key
-    const regex = new RegExp(keyQuery, 'i')
+
+    // Only allow alphanumeric characters for preventing from ReDoS attacks
+    const safeKeyQuery = typeof keyQuery === 'string' ? keyQuery.replace(/[^a-zA-Z0-9]/g, '') : '';
+    
+    const regex = new RegExp(safeKeyQuery, 'i')
 
     tutorialModel.find({ $or: [{ tutorial_title: regex }, { tutorial_category: categoryQuery }] }).sort({ tutorial_priority: 1 }).then((results) => {
         return res.status(200).json({
