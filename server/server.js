@@ -8,6 +8,7 @@ const corsOption  = require("./config/CorsConfig");
 // Import BruteForce packages
 const ExpressBrute = require('express-brute');
 
+
 /*
 * limiting server request resources
 * Below express rate limiter is used
@@ -47,7 +48,8 @@ const userRoutes = require('./routes/userRoutes');
 
 app.use('/adminApp',limiter, tutorialRoutes)
 app.use('/adminApp/challengesRoutes',limiter, challengesRoutes)
-app.use("/admin/users", limiter,bruteforce.prevent,userRoutes);
+app.use("/admin/users", limiter, bruteforce.prevent, userRoutes);
+app.use('/auth', userRoutes)
 app.use('/admin/tutorials',limiter, tutorialRoutes)
 
 //compiler
