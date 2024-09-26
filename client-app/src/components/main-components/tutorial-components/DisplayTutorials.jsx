@@ -56,8 +56,27 @@ export default function DisplayTutorials({isDark}) {
         if(token === null || token === ''){
             message.error('Sign in or sign up to start tutorial')
         }else{
-            window.location.href = `${tutorialCategory}/${selectedTutorialID}`
+           
+            const baseUrl = window.location.origin;
+
+            // Ensure the selected tutorial ID is valid
+            if (isValidTutorialID(selectedTutorialID)) {
+                
+                const tutorialUrl = `${baseUrl}/${tutorialCategory}/${selectedTutorialID}`;
+
+                // Perform the redirection using the sanitized URL
+                window.location.href = tutorialUrl;
+            } else {
+                message.error('Invalid tutorial selected');
+            }
         }
+    }
+
+    
+    const isValidTutorialID = (id) => {
+        
+        const idPattern = /^[a-fA-F0-9]{24}$/; // Example pattern for MongoDB ObjectID
+        return idPattern.test(id);
     }
 
     return (
