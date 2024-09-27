@@ -3,7 +3,7 @@ import './TextEditor.css'
 import { Icon } from '@iconify/react';
 import {Button, Text, Switch, Tooltip, Link, Spacer} from '@nextui-org/react'
 import ReactModal from 'react-modal'
-import axios from 'axios'
+import axiosInstance from './apiCalls/axiosInstance'
 
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-java'; // Import the mode for Java
@@ -130,7 +130,7 @@ export default function TextEditor({isDark}) {
     })*/
 
     try {
-      const res = await axios.post('http://localhost:5000/compiler/run', data);
+      const res = await axiosInstance.post('http://localhost:5000/compiler/run', data);
     
       if (res.data.success) {
         setRunResult(res.data);

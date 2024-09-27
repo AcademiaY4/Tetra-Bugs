@@ -2,7 +2,7 @@ import {Spacer} from '@nextui-org/react';
 import {Button, message} from 'antd';
 import React, {useState} from 'react'
 import { Icon } from '@iconify/react';
-import axios from 'axios';
+import axiosInstance from './apiCalls/axiosInstance';
 
 export default function TutorialExercises({answeringSection, answer, isDark}) {
 
@@ -65,7 +65,7 @@ export default function TutorialExercises({answeringSection, answer, isDark}) {
         const data = {
             point: 4
         }
-        axios.put(`http://localhost:5000/admin/users/updatePoint/${userId}`, data).then((res)=>{
+        axiosInstance.put(`http://localhost:5000/admin/users/updatePoint/${userId}`, data).then((res)=>{
             message.success('+ 4 points')
         }).catch((error)=>{
             console.error(error)

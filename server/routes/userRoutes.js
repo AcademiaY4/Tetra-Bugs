@@ -7,6 +7,11 @@ const jwt = require('jsonwebtoken');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
+
+const { googleAuth } = require('../controllers/authController');
+
+const passport = require('passport');
+
 // Register new user
 
 router.post('/register', async(req, res) => {
@@ -245,5 +250,7 @@ router.put('/updatePoint/:id', async(req, res) => {
         });
     }
 })
+
+router.get("/google", googleAuth);
 
 module.exports = router;

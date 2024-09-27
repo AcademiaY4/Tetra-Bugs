@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./Userprofile.css";
-import axios from "axios";
+import axiosInstance from "./apiCalls/axiosInstance";
 import jwt from "jwt-decode";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -37,7 +37,7 @@ function Userprofile() {
       userId = jwtToken.userId;
       setUserId(userId);
     }
-    axios
+    axiosInstance
       .get("http://localhost:5000/admin/users/get-user-by-id/" + userId)
       .then((response) => {
         // console.log(response.data.data);
@@ -59,7 +59,7 @@ function Userprofile() {
   //update
   const handleSubmit = async () => {
     try {
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `http://localhost:5000/admin/users/update-user/${user.id}`,
         formik.values
       );
@@ -79,7 +79,7 @@ function Userprofile() {
     console.log("Hello");
     try {
       console.log(userId);
-      const response = await axios.delete(
+      const response = await axiosInstance.delete(
         `http://localhost:5000/admin/users/delete-user/${userId}`
       );
       console.log("Response Status:", response.status);
